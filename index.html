@@ -1,9 +1,1807 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>IKONIKA Cuba — Grupo de Comunicación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+      /* ── RESET & BASE ─────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --orange: #ff5c0a;
+        --orange-2: #ff7a35;
+        --orange-3: #ff9a66;
+        --black: #0a0a0a;
+        --black-2: #141414;
+        --black-3: #1e1e1e;
+        --white: #f5f0eb;
+        --white-2: #ede8e3;
+        --muted: #7a7470;
+        --font-display: "Bebas Neue", sans-serif;
+        --font-sans: "Syne", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--black);
+        color: var(--white);
+        font-family: var(--font-body);
+        font-weight: 300;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* ── NOISE OVERLAY ──────────────────────────── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 100;
+        opacity: 0.35;
+      }
+
+      /* ── NAV ────────────────────────────────────── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 500;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 48px;
+        mix-blend-mode: difference;
+        transition: padding 0.4s var(--ease);
+      }
+      nav.scrolled {
+        padding: 14px 48px;
+        mix-blend-mode: normal;
+        background: rgba(10, 10, 10, 0.92);
+        backdrop-filter: blur(16px);
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+      }
+      .nav-logo {
+        font-family: var(--font-display);
+        font-size: 26px;
+        letter-spacing: 0.08em;
+        color: var(--white);
+        text-decoration: none;
+      }
+      .nav-logo span {
+        color: var(--orange);
+      }
+      .nav-links {
+        display: flex;
+        gap: 36px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-family: var(--font-sans);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--white);
+        text-decoration: none;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+      }
+      .nav-links a:hover {
+        opacity: 1;
+      }
+      .nav-cta {
+        font-family: var(--font-sans);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--black);
+        background: var(--orange);
+        border: none;
+        padding: 10px 22px;
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+      .nav-cta:hover {
+        background: var(--orange-2);
+        transform: translateY(-1px);
+      }
+
+      /* ── HERO ───────────────────────────────────── */
+      #hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 0 48px 80px;
+        overflow: hidden;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 70% 60% at 65% 40%,
+            rgba(255, 92, 10, 0.12) 0%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 40% 40% at 30% 80%,
+            rgba(255, 92, 10, 0.06) 0%,
+            transparent 60%
+          );
+      }
+
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 80px 80px;
+      }
+
+      .hero-tag {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin-bottom: 20px;
+        opacity: 0;
+        animation: fadeUp 1s 0.2s ease forwards;
+      }
+
+      .hero-title {
+        font-family: var(--font-display);
+        font-size: clamp(80px, 14vw, 180px);
+        line-height: 0.9;
+        letter-spacing: 0.02em;
+        color: var(--white);
+        margin-bottom: 0;
+        opacity: 0;
+        animation: fadeUp 1.2s 0.4s ease forwards;
+      }
+      .hero-title .accent {
+        color: var(--orange);
+        display: block;
+      }
+      .hero-title .outline {
+        -webkit-text-stroke: 1.5px var(--white);
+        color: transparent;
+        display: block;
+      }
+
+      .hero-bottom {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-top: 48px;
+        opacity: 0;
+        animation: fadeUp 1s 0.7s ease forwards;
+      }
+
+      .hero-desc {
+        max-width: 360px;
+        font-size: 15px;
+        font-weight: 300;
+        color: rgba(245, 240, 235, 0.65);
+        line-height: 1.7;
+      }
+      .hero-desc strong {
+        color: var(--white);
+        font-weight: 500;
+      }
+
+      .hero-stats {
+        display: flex;
+        gap: 48px;
+      }
+      .stat-item {
+        text-align: right;
+      }
+      .stat-num {
+        font-family: var(--font-display);
+        font-size: 42px;
+        line-height: 1;
+        color: var(--orange);
+      }
+      .stat-label {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .hero-scroll {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        animation: fadeIn 1.2s 1.2s forwards;
+      }
+      .scroll-line {
+        width: 1px;
+        height: 50px;
+        background: linear-gradient(to bottom, var(--orange), transparent);
+        animation: scrollPulse 3s 1.5s infinite;
+      }
+      .scroll-text {
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+      }
+
+      /* ── MARQUEE BAND ───────────────────────────── */
+      .marquee-band {
+        background: var(--orange);
+        padding: 14px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+      }
+      .marquee-inner {
+        display: inline-flex;
+        animation: marquee 36s linear infinite;
+      }
+      .marquee-item {
+        font-family: var(--font-display);
+        font-size: 18px;
+        letter-spacing: 0.08em;
+        color: var(--black);
+        padding: 0 32px;
+      }
+      .marquee-dot {
+        color: rgba(0, 0, 0, 0.3);
+      }
+
+      /* ── SECTIONS BASE ──────────────────────────── */
+      section {
+        padding: 120px 48px;
+      }
+      .section-label {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-label::before {
+        content: "";
+        display: block;
+        width: 32px;
+        height: 1px;
+        background: var(--orange);
+      }
+      .section-title {
+        font-family: var(--font-display);
+        font-size: clamp(48px, 7vw, 92px);
+        line-height: 0.95;
+        letter-spacing: 0.02em;
+        color: var(--white);
+        margin-bottom: 24px;
+      }
+
+      /* ── ABOUT ──────────────────────────────────── */
+      #about {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .about-visual {
+        position: relative;
+        aspect-ratio: 4/5;
+      }
+      .about-box {
+        background: var(--black-3);
+        border: 0.5px solid rgba(255, 255, 255, 0.06);
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      .about-box::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 30% 70%,
+          rgba(255, 92, 10, 0.15),
+          transparent 60%
+        );
+      }
+      .about-box-inner {
+        position: absolute;
+        inset: 40px;
+        border: 0.5px solid rgba(255, 92, 10, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .about-monogram {
+        font-family: var(--font-display);
+        font-size: 140px;
+        color: var(--orange);
+        opacity: 0.15;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+      .about-badge {
+        position: absolute;
+        bottom: -20px;
+        right: -20px;
+        background: var(--orange);
+        color: var(--black);
+        padding: 20px;
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        line-height: 1.5;
+      }
+      .about-content {
+        max-width: 520px;
+      }
+      .about-body {
+        font-size: 16px;
+        font-weight: 300;
+        color: rgba(245, 240, 235, 0.7);
+        line-height: 1.8;
+        margin-bottom: 32px;
+      }
+      .about-body strong {
+        color: var(--white);
+        font-weight: 500;
+      }
+      .about-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 40px;
+      }
+      .pill {
+        font-family: var(--font-sans);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        border: 0.5px solid rgba(255, 92, 10, 0.4);
+        color: var(--orange);
+        padding: 6px 16px;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .pill:hover {
+        background: var(--orange);
+        color: var(--black);
+      }
+
+      /* ── SERVICIOS ──────────────────────────────── */
+      #servicios {
+        background: var(--black-2);
+      }
+      .servicios-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 80px;
+      }
+      .servicios-intro {
+        max-width: 340px;
+        font-size: 15px;
+        color: rgba(245, 240, 235, 0.55);
+        line-height: 1.7;
+      }
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .service-card {
+        background: var(--black-2);
+        padding: 48px 36px;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.4s var(--ease);
+        cursor: default;
+      }
+      .service-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 92, 10, 0.06),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      .service-card:hover {
+        background: var(--black-3);
+      }
+      .service-card:hover::before {
+        opacity: 1;
+      }
+      .service-num {
+        font-family: var(--font-display);
+        font-size: 56px;
+        color: rgba(255, 92, 10, 0.12);
+        line-height: 1;
+        margin-bottom: 24px;
+        transition: color 0.3s;
+      }
+      .service-card:hover .service-num {
+        color: rgba(255, 92, 10, 0.3);
+      }
+      .service-icon {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 20px;
+        color: var(--orange);
+      }
+      .service-name {
+        font-family: var(--font-sans);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 12px;
+      }
+      .service-desc {
+        font-size: 14px;
+        font-weight: 300;
+        color: rgba(245, 240, 235, 0.55);
+        line-height: 1.7;
+      }
+      .service-arrow {
+        position: absolute;
+        bottom: 36px;
+        right: 36px;
+        width: 36px;
+        height: 36px;
+        border: 0.5px solid rgba(255, 92, 10, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translate(8px, 8px);
+        transition:
+          opacity 0.3s,
+          transform 0.3s var(--ease);
+        color: var(--orange);
+      }
+      .service-card:hover .service-arrow {
+        opacity: 1;
+        transform: translate(0, 0);
+      }
+
+      /* ── PROCESO ──────────────────────────────── */
+      #proceso {
+        position: relative;
+      }
+      .proceso-header {
+        margin-bottom: 80px;
+      }
+      .proceso-steps {
+        position: relative;
+      }
+      .proceso-line {
+        position: absolute;
+        left: 36px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          var(--orange),
+          rgba(255, 92, 10, 0.1)
+        );
+      }
+      .step-item {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 40px;
+        margin-bottom: 64px;
+        align-items: start;
+      }
+      .step-num-wrap {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        padding-top: 4px;
+      }
+      .step-circle {
+        width: 72px;
+        height: 72px;
+        border: 0.5px solid rgba(255, 92, 10, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--black);
+        position: relative;
+        z-index: 1;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .step-item:hover .step-circle {
+        background: var(--orange);
+        border-color: var(--orange);
+      }
+      .step-n {
+        font-family: var(--font-display);
+        font-size: 28px;
+        color: var(--orange);
+        transition: color 0.3s;
+      }
+      .step-item:hover .step-n {
+        color: var(--black);
+      }
+      .step-content {
+        padding-top: 16px;
+      }
+      .step-title {
+        font-family: var(--font-sans);
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 10px;
+      }
+      .step-body {
+        font-size: 15px;
+        font-weight: 300;
+        color: rgba(245, 240, 235, 0.6);
+        line-height: 1.7;
+        max-width: 560px;
+      }
+
+      /* ── TRABAJO ──────────────────────────────── */
+      #trabajo {
+        background: var(--black-2);
+      }
+      .trabajo-header {
+        margin-bottom: 64px;
+      }
+      .trabajo-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: auto;
+        gap: 16px;
+      }
+      .work-item {
+        background: var(--black-3);
+        overflow: hidden;
+        position: relative;
+        cursor: default;
+      }
+      .work-item:nth-child(1) {
+        grid-column: span 7;
+        grid-row: span 2;
+        aspect-ratio: unset;
+        min-height: 480px;
+      }
+      .work-item:nth-child(2) {
+        grid-column: span 5;
+      }
+      .work-item:nth-child(3) {
+        grid-column: span 5;
+      }
+      .work-item:nth-child(4) {
+        grid-column: span 4;
+      }
+      .work-item:nth-child(5) {
+        grid-column: span 8;
+      }
+      .work-bg {
+        position: absolute;
+        inset: 0;
+        transition: transform 0.8s var(--ease);
+      }
+      .work-item:hover .work-bg {
+        transform: scale(1.04);
+      }
+      .work-item:nth-child(1) .work-bg {
+        background: linear-gradient(135deg, #1a0a00, #2d1200);
+      }
+      .work-item:nth-child(2) .work-bg {
+        background: linear-gradient(135deg, #0a0f1a, #0f1e2d);
+      }
+      .work-item:nth-child(3) .work-bg {
+        background: linear-gradient(135deg, #0a0a12, #12121e);
+      }
+      .work-item:nth-child(4) .work-bg {
+        background: linear-gradient(135deg, #0a0d08, #141f10);
+      }
+      .work-item:nth-child(5) .work-bg {
+        background: linear-gradient(135deg, #14080a, #200c10);
+      }
+      .work-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.8) 0%,
+          transparent 60%
+        );
+      }
+      .work-pattern {
+        position: absolute;
+        inset: 0;
+        opacity: 0.08;
+      }
+      .work-pattern.dots {
+        background-image: radial-gradient(
+          circle,
+          var(--orange) 1px,
+          transparent 1px
+        );
+        background-size: 28px 28px;
+      }
+      .work-pattern.lines {
+        background-image: repeating-linear-gradient(
+          45deg,
+          rgba(255, 92, 10, 0.3) 0,
+          rgba(255, 92, 10, 0.3) 1px,
+          transparent 0,
+          transparent 50%
+        );
+        background-size: 16px 16px;
+      }
+      .work-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 28px 28px 24px;
+        transform: translateY(8px);
+        transition: transform 0.4s var(--ease);
+      }
+      .work-item:hover .work-info {
+        transform: translateY(0);
+      }
+      .work-tag {
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin-bottom: 6px;
+      }
+      .work-title {
+        font-family: var(--font-sans);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--white);
+      }
+      .work-mono {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: var(--font-display);
+        font-size: clamp(60px, 10vw, 120px);
+        color: rgba(255, 92, 10, 0.07);
+        white-space: nowrap;
+        pointer-events: none;
+        letter-spacing: 0.04em;
+        transition: color 0.4s;
+      }
+      .work-item:hover .work-mono {
+        color: rgba(255, 92, 10, 0.12);
+      }
+
+      /* ── CLIENTES / MARCAS ──────────────────────── */
+      #clientes {
+        padding: 80px 48px;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+      }
+      .clientes-label {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .brands-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 64px;
+        flex-wrap: wrap;
+      }
+      .brand-name {
+        font-family: var(--font-sans);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(245, 240, 235, 0.2);
+        transition: color 0.3s;
+      }
+      .brand-name:hover {
+        color: rgba(245, 240, 235, 0.7);
+      }
+
+      /* ── CONTACTO ───────────────────────────────── */
+      #contacto {
+        background: var(--black);
+        position: relative;
+        overflow: hidden;
+      }
+      .contacto-bg {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 60% 70% at 80% 50%,
+          rgba(255, 92, 10, 0.08),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .contacto-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 100px;
+        align-items: start;
+      }
+      .contacto-left .section-title {
+        margin-bottom: 20px;
+      }
+      .contacto-sub {
+        font-size: 15px;
+        font-weight: 300;
+        color: rgba(245, 240, 235, 0.6);
+        line-height: 1.8;
+        margin-bottom: 48px;
+        max-width: 420px;
+      }
+      .contact-items {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 24px;
+        border: 0.5px solid rgba(255, 255, 255, 0.07);
+        transition:
+          border-color 0.3s,
+          background 0.3s;
+      }
+      .contact-item:hover {
+        border-color: rgba(255, 92, 10, 0.3);
+        background: rgba(255, 92, 10, 0.04);
+      }
+      .contact-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 92, 10, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--orange);
+      }
+      .contact-data {
+        font-size: 14px;
+        color: rgba(245, 240, 235, 0.55);
+        line-height: 1.4;
+      }
+      .contact-data strong {
+        display: block;
+        color: var(--white);
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+
+      /* FORM */
+      .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        background: var(--black-3);
+        border: 0.5px solid rgba(255, 255, 255, 0.08);
+        color: var(--white);
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 300;
+        padding: 14px 18px;
+        outline: none;
+        transition: border-color 0.3s;
+        appearance: none;
+        resize: none;
+      }
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        border-color: var(--orange);
+      }
+      .form-group textarea {
+        height: 120px;
+      }
+      .form-group select option {
+        background: var(--black-3);
+      }
+      .btn-submit {
+        background: var(--orange);
+        border: none;
+        color: var(--black);
+        font-family: var(--font-sans);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 18px 40px;
+        cursor: pointer;
+        align-self: flex-start;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background 0.3s,
+          transform 0.2s;
+      }
+      .btn-submit:hover {
+        background: var(--orange-2);
+        transform: translateY(-2px);
+      }
+      .btn-submit:active {
+        transform: translateY(0);
+      }
+      .btn-submit::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(-100%);
+        transition: transform 0.5s var(--ease);
+      }
+      .btn-submit:hover::after {
+        transform: translateX(100%);
+      }
+
+      /* ── FOOTER ─────────────────────────────────── */
+      footer {
+        background: var(--black);
+        border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+        padding: 48px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .footer-logo {
+        font-family: var(--font-display);
+        font-size: 28px;
+        letter-spacing: 0.08em;
+        color: var(--white);
+        text-decoration: none;
+      }
+      .footer-logo span {
+        color: var(--orange);
+      }
+      .footer-copy {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .footer-social {
+        display: flex;
+        gap: 20px;
+      }
+      .social-link {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .social-link:hover {
+        color: var(--orange);
+      }
+
+      /* ── ANIMATIONS ─────────────────────────────── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes marquee {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes scrollPulse {
+        0%,
+        100% {
+          opacity: 0.4;
+          transform: scaleY(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scaleY(1.1);
+        }
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .reveal.hidden {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-delay-1 {
+        transition-delay: 0.08s;
+      }
+      .reveal-delay-2 {
+        transition-delay: 0.16s;
+      }
+      .reveal-delay-3 {
+        transition-delay: 0.24s;
+      }
+      .reveal-delay-4 {
+        transition-delay: 0.32s;
+      }
+      .reveal-delay-5 {
+        transition-delay: 0.4s;
+      }
+
+      /* ── MOBILE ─────────────────────────────────── */
+      @media (max-width: 1024px) {
+        nav {
+          padding: 20px 28px;
+        }
+        nav.scrolled {
+          padding: 14px 28px;
+        }
+        .nav-links {
+          display: none;
+        }
+        section {
+          padding: 80px 28px;
+        }
+        #hero {
+          padding: 0 28px 64px;
+        }
+        #about {
+          grid-template-columns: 1fr;
+          gap: 48px;
+        }
+        .about-visual {
+          max-height: 300px;
+          aspect-ratio: unset;
+        }
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+        .trabajo-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .work-item:nth-child(1),
+        .work-item:nth-child(2),
+        .work-item:nth-child(3),
+        .work-item:nth-child(4),
+        .work-item:nth-child(5) {
+          grid-column: span 1;
+          min-height: 240px;
+        }
+        .contacto-inner {
+          grid-template-columns: 1fr;
+          gap: 56px;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .hero-stats {
+          gap: 28px;
+        }
+        .servicios-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        footer {
+          flex-direction: column;
+          gap: 20px;
+          text-align: center;
+        }
+        .clientes {
+          padding: 60px 28px;
+        }
+        .brands-row {
+          gap: 32px;
+        }
+      }
+    </style>
   </head>
-  <body></body>
+  <body>
+    <!-- NAV -->
+    <nav id="navbar">
+      <a href="#" class="nav-logo">IKONIKA<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">Nosotros</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#trabajo">Trabajo</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <a href="#contacto" class="nav-cta">Hablemos</a>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+
+      <p class="hero-tag">Grupo de Comunicación — La Habana, Cuba</p>
+
+      <h1 class="hero-title">
+        <span>Tu marca</span>
+        <span class="accent">al máximo</span>
+        <span class="outline">nivel</span>
+      </h1>
+
+      <div class="hero-bottom">
+        <p class="hero-desc">
+          Somos el <strong>grupo de comunicación</strong> que tu negocio
+          necesita. Estrategia, diseño y contenido que conectan con el mercado
+          cubano y más allá.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">6+</div>
+            <div class="stat-label">Años activos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">80+</div>
+            <div class="stat-label">Clientes</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">360°</div>
+            <div class="stat-label">Solución</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll">
+        <span class="scroll-text">Scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-band">
+      <div class="marquee-inner">
+        <span class="marquee-item"
+          >Marketing Digital <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Identidad de Marca <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Diseño Gráfico <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Fotografía <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Redes Sociales <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Publicidad <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Estrategia <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Marketing Digital <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Identidad de Marca <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Diseño Gráfico <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Fotografía <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Redes Sociales <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Publicidad <span class="marquee-dot">◆</span></span
+        >
+        <span class="marquee-item"
+          >Estrategia <span class="marquee-dot">◆</span></span
+        >
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="about-visual reveal">
+        <div class="about-box">
+          <div class="about-box-inner">
+            <div class="about-monogram">IK</div>
+          </div>
+        </div>
+        <div class="about-badge">Centro Habana<br />Cuba · Est. 2018</div>
+      </div>
+      <div class="about-content">
+        <div class="section-label reveal">Quiénes somos</div>
+        <h2 class="section-title reveal reveal-delay-1">
+          Creatividad<br />con<br />estrategia
+        </h2>
+        <p class="about-body reveal reveal-delay-2">
+          IKONIKA es un <strong>grupo de comunicación integral</strong> con sede
+          en Centro Habana. Nacimos para llenar el vacío que existe entre las
+          marcas cubanas y el mundo del marketing profesional.<br /><br />
+          Combinamos <strong>estrategia, creatividad y tecnología</strong> para
+          construir presencias de marca que generen resultados reales. No solo
+          diseñamos — comunicamos.
+        </p>
+        <div class="about-pills reveal reveal-delay-3">
+          <span class="pill">Marketing</span>
+          <span class="pill">Branding</span>
+          <span class="pill">Diseño</span>
+          <span class="pill">Contenido</span>
+          <span class="pill">Fotografía</span>
+          <span class="pill">Publicidad</span>
+        </div>
+        <a
+          href="#contacto"
+          class="nav-cta reveal reveal-delay-4"
+          style="display: inline-block; text-decoration: none"
+          >Trabajemos juntos →</a
+        >
+      </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios">
+      <div class="servicios-header">
+        <div>
+          <div class="section-label reveal">Lo que hacemos</div>
+          <h2 class="section-title reveal reveal-delay-1">
+            Nuestros<br />servicios
+          </h2>
+        </div>
+        <p class="servicios-intro reveal reveal-delay-2">
+          Una cartera completa de servicios diseñada para el mercado cubano, con
+          estándares internacionales de calidad.
+        </p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-num">01</div>
+          <svg
+            class="service-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              d="M2 8.5C2 5.46 4.46 3 7.5 3h9C19.54 3 22 5.46 22 8.5v7c0 3.04-2.46 5.5-5.5 5.5h-9C4.46 21 2 18.54 2 15.5v-7Z"
+            />
+            <path d="M7 10.5h10M7 13.5h6" />
+          </svg>
+          <div class="service-name">Marketing Digital</div>
+          <p class="service-desc">
+            Gestión de redes sociales, campañas pagadas y estrategia de
+            contenido que construye comunidades y genera ventas.
+          </p>
+          <div class="service-arrow">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-num">02</div>
+          <svg
+            class="service-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path
+              d="M12 3v4M12 17v4M3 12h4M17 12h4M5.64 5.64l2.83 2.83M15.54 15.54l2.83 2.83M18.36 5.64l-2.83 2.83M8.46 15.54l-2.83 2.83"
+            />
+          </svg>
+          <div class="service-name">Identidad de Marca</div>
+          <p class="service-desc">
+            Creamos marcas que perduran — desde el naming y logo hasta el manual
+            completo de identidad visual corporativa.
+          </p>
+          <div class="service-arrow">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-num">03</div>
+          <svg
+            class="service-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path d="M12 19l7-7 3 3-7 7-3-3Z" />
+            <path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5Z" />
+            <path d="m2 2 7.586 7.586" />
+            <circle cx="11" cy="11" r="2" />
+          </svg>
+          <div class="service-name">Diseño Gráfico</div>
+          <p class="service-desc">
+            Material visual para print y digital: flyers, banners, packaging,
+            señalética, menús y todo lo que tu negocio necesita.
+          </p>
+          <div class="service-arrow">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-num">04</div>
+          <svg
+            class="service-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+            />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
+          <div class="service-name">Producción de Contenido</div>
+          <p class="service-desc">
+            Fotografía y video profesional para productos, eventos, reels y
+            campañas. Calidad visual que vende.
+          </p>
+          <div class="service-arrow">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-num">05</div>
+          <svg
+            class="service-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18M9 21V9" />
+          </svg>
+          <div class="service-name">Publicidad Empresarial</div>
+          <p class="service-desc">
+            Estrategia y ejecución de campañas publicitarias para posicionar tu
+            negocio como referente en el mercado.
+          </p>
+          <div class="service-arrow">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-num">06</div>
+          <svg
+            class="service-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <div class="service-name">Consultoría Estratégica</div>
+          <p class="service-desc">
+            Diagnóstico y plan de comunicación integral para que tu marca hable
+            con claridad y coherencia en todos los canales.
+          </p>
+          <div class="service-arrow">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESO -->
+    <section id="proceso">
+      <div class="proceso-header">
+        <div class="section-label reveal">Cómo trabajamos</div>
+        <h2 class="section-title reveal reveal-delay-1">
+          Nuestro<br />proceso
+        </h2>
+      </div>
+      <div class="proceso-steps">
+        <div class="proceso-line"></div>
+        <div class="step-item reveal">
+          <div class="step-num-wrap">
+            <div class="step-circle"><span class="step-n">01</span></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Diagnóstico & Estrategia</div>
+            <p class="step-body">
+              Comenzamos con un análisis profundo de tu negocio, competencia y
+              mercado. Definimos objetivos claros y construimos la hoja de ruta
+              de comunicación.
+            </p>
+          </div>
+        </div>
+        <div class="step-item reveal reveal-delay-1">
+          <div class="step-num-wrap">
+            <div class="step-circle"><span class="step-n">02</span></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Concepto Creativo</div>
+            <p class="step-body">
+              Desarrollamos el concepto visual y narrativo de tu marca. Paleta
+              de colores, tipografía, tono de voz y los elementos que te harán
+              inconfundible.
+            </p>
+          </div>
+        </div>
+        <div class="step-item reveal reveal-delay-2">
+          <div class="step-num-wrap">
+            <div class="step-circle"><span class="step-n">03</span></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Producción & Ejecución</div>
+            <p class="step-body">
+              Nuestro equipo creativo da vida al concepto: diseño, fotografía,
+              video y contenido editorial. Todo bajo los más altos estándares de
+              calidad.
+            </p>
+          </div>
+        </div>
+        <div class="step-item reveal reveal-delay-3">
+          <div class="step-num-wrap">
+            <div class="step-circle"><span class="step-n">04</span></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Lanzamiento & Gestión</div>
+            <p class="step-body">
+              Activamos la presencia de tu marca en todos los canales y
+              gestionamos la comunicación de manera continua, midiendo
+              resultados y optimizando en tiempo real.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRABAJO -->
+    <section id="trabajo">
+      <div class="trabajo-header">
+        <div class="section-label reveal">Portafolio</div>
+        <h2 class="section-title reveal reveal-delay-1">
+          Trabajos<br />destacados
+        </h2>
+      </div>
+      <div class="trabajo-grid">
+        <div class="work-item reveal">
+          <div class="work-bg"></div>
+          <div class="work-pattern dots"></div>
+          <div class="work-overlay"></div>
+          <div class="work-mono">BRAND</div>
+          <div class="work-info">
+            <div class="work-tag">Identidad Corporativa</div>
+            <div class="work-title">Marca Gastronómica Premium</div>
+          </div>
+        </div>
+        <div class="work-item reveal reveal-delay-1">
+          <div class="work-bg"></div>
+          <div class="work-pattern lines"></div>
+          <div class="work-overlay"></div>
+          <div class="work-mono">CAMP</div>
+          <div class="work-info">
+            <div class="work-tag">Campaña Digital</div>
+            <div class="work-title">Lanzamiento 360°</div>
+          </div>
+        </div>
+        <div class="work-item reveal reveal-delay-2">
+          <div class="work-bg"></div>
+          <div class="work-pattern dots"></div>
+          <div class="work-overlay"></div>
+          <div class="work-mono">FOTO</div>
+          <div class="work-info">
+            <div class="work-tag">Fotografía de Producto</div>
+            <div class="work-title">Editorial Comercial</div>
+          </div>
+        </div>
+        <div class="work-item reveal reveal-delay-1">
+          <div class="work-bg"></div>
+          <div class="work-pattern lines"></div>
+          <div class="work-overlay"></div>
+          <div class="work-mono">WEB</div>
+          <div class="work-info">
+            <div class="work-tag">Diseño Web</div>
+            <div class="work-title">Presencia Digital</div>
+          </div>
+        </div>
+        <div class="work-item reveal reveal-delay-2">
+          <div class="work-bg"></div>
+          <div class="work-pattern dots"></div>
+          <div class="work-overlay"></div>
+          <div class="work-mono">PACK</div>
+          <div class="work-info">
+            <div class="work-tag">Packaging & Print</div>
+            <div class="work-title">Diseño de Empaque</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section id="clientes">
+      <p class="clientes-label">Han confiado en nosotros</p>
+      <div class="brands-row">
+        <span class="brand-name">Nocturno</span>
+        <span class="brand-name">La Casona</span>
+        <span class="brand-name">Havaná Co.</span>
+        <span class="brand-name">Miramar Hub</span>
+        <span class="brand-name">El Patio</span>
+        <span class="brand-name">CubaCraft</span>
+        <span class="brand-name">Vedado Lab</span>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto">
+      <div class="contacto-bg"></div>
+      <div class="contacto-inner">
+        <div class="contacto-left">
+          <div class="section-label reveal">Contáctanos</div>
+          <h2 class="section-title reveal reveal-delay-1">
+            ¿Listo para<br />crecer?
+          </h2>
+          <p class="contacto-sub reveal reveal-delay-2">
+            Cuéntanos sobre tu proyecto y te respondemos en menos de 24 horas.
+            El primer paso hacia una marca más poderosa empieza aquí.
+          </p>
+          <div class="contact-items">
+            <div class="contact-item reveal reveal-delay-2">
+              <div class="contact-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.36 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.92 16Z"
+                  />
+                </svg>
+              </div>
+              <div class="contact-data">
+                <strong>+53 537 16198</strong>
+                WhatsApp disponible
+              </div>
+            </div>
+            <div class="contact-item reveal reveal-delay-3">
+              <div class="contact-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path
+                    d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                  />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+              <div class="contact-data">
+                <strong
+                  ><a
+                    href="/cdn-cgi/l/email-protection"
+                    class="__cf_email__"
+                    data-cfemail="8ce5e7e3e2e5e7edeff9eeedccebe1ede5e0a2efe3e1"
+                    >[email&#160;protected]</a
+                  ></strong
+                >
+                Respuesta en 24h
+              </div>
+            </div>
+            <div class="contact-item reveal reveal-delay-4">
+              <div class="contact-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div class="contact-data">
+                <strong>Calle Pocito #208</strong>
+                Centro Habana, Cuba
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 
+        <div class="reveal reveal-delay-2">
+          <form
+            class="contact-form"
+            id="contactForm"
+            onsubmit="handleSubmit(event)"
+          >
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input
+                  type="text"
+                  id="field_nombre"
+                  name="from_name"
+                  placeholder="Tu nombre"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Empresa</label>
+                <input
+                  type="text"
+                  id="field_empresa"
+                  name="empresa"
+                  placeholder="Tu empresa"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Teléfono / WhatsApp</label>
+              <input
+                type="tel"
+                id="field_telefono"
+                name="telefono"
+                placeholder="+53 0000 0000"
+              />
+            </div>
+            <div class="form-group">
+              <label>¿Qué necesitas?</label>
+              <select id="field_servicio" name="servicio">
+                <option value="" disabled selected>
+                  Selecciona un servicio
+                </option>
+                <option>Marketing Digital</option>
+                <option>Identidad de Marca</option>
+                <option>Diseño Gráfico</option>
+                <option>Fotografía & Video</option>
+                <option>Publicidad Empresarial</option>
+                <option>Consultoría</option>
+                <option>Otros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cuéntanos tu proyecto</label>
+              <textarea
+                id="field_mensaje"
+                name="message"
+                placeholder="Describe brevemente lo que buscas lograr…"
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">
+              Enviar mensaje →
+            </button>
+            <div
+              id="formSuccess"
+              style="
+                display: none;
+                font-size: 14px;
+                color: #5dcaa5;
+                padding: 12px 0;
+              "
+            >
+              ✓ Mensaje enviado. Te contactamos en menos de 24 horas.
+            </div>
+            <div
+              id="formError"
+              style="
+                display: none;
+                font-size: 14px;
+                color: #f09595;
+                padding: 12px 0;
+              "
+            >
+              ✗ Hubo un error al enviar. Por favor escríbenos directamente a
+              <a
+                href="/cdn-cgi/l/email-protection"
+                class="__cf_email__"
+                data-cfemail="771e1c18191e1c161402151637101a161e1b5914181a"
+                >[email&#160;protected]</a
+              >
+            </div>
+          </form>
+        </div> -->
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <a href="#" class="footer-logo">IKONIKA<span>.</span></a>
+      <p class="footer-copy">
+        © 2025 IKONIKA Cuba. Todos los derechos reservados.
+      </p>
+      <div class="footer-social">
+        <a
+          href="https://www.instagram.com/ikonika.cuba"
+          target="_blank"
+          class="social-link"
+          >Instagram</a
+        >
+        <a
+          href="https://www.facebook.com/IKONIKACuba"
+          target="_blank"
+          class="social-link"
+          >Facebook</a
+        >
+        <a href="https://wa.me/5353716198" target="_blank" class="social-link"
+          >WhatsApp</a
+        >
+      </div>
+    </footer>
+  </body>
 </html>
